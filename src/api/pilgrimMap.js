@@ -2,9 +2,8 @@ import cors from '@fastify/cors'
 import { pool } from '../services/database.js'
 
 export default async function (fastify, opts) {
-  // ✅ Utiliser fastify, pas app
   await fastify.register(cors, {
-    origin: '*' // En production, limiter aux domaines autorisés
+    origin: '*'
   })
 
   fastify.get('/api/geojson', async (request, reply) => {
@@ -13,7 +12,9 @@ export default async function (fastify, opts) {
         SELECT 
           id,
           ST_AsGeoJSON(geometry) as geometry,
-          properties
+          name,
+          category,
+          description
         FROM pilgrim_map
         ORDER BY id
       `)
@@ -24,7 +25,11 @@ export default async function (fastify, opts) {
           type: 'Feature',
           id: row.id,
           geometry: row.geometry,
-          properties: row.properties
+          properties: {
+            name: row.name,
+            category : row.category,
+            description: row.description
+          }
         }))
       }
 
@@ -33,7 +38,7 @@ export default async function (fastify, opts) {
         .send(geojson)
     } catch (error) {
       console.error('❌ Erreur détaillée:', error)
-      fastify.log.error(error) // ✅ utiliser fastify.log
+      fastify.log.error(error)
       reply.code(500).send({
         error: 'Erreur serveur',
         message: error.message,
