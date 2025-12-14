@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin'
-import { pool } from '../services/database.js'
+import { pool } from '../utils/database.js'
 
 async function databasePlugin (fastify, options) {
   fastify.decorate('db', {

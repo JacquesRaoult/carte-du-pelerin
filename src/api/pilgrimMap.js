@@ -1,5 +1,5 @@
 import cors from '@fastify/cors'
-import { pool } from '../services/database.js'
+import { pool } from '../utils/database.js'
 
 export default async function (fastify, opts) {
   await fastify.register(cors, {
