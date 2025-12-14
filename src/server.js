@@ -10,9 +10,9 @@ import fastifyFormbody from '@fastify/formbody'
 import databasePlugin from './plugins/database.js'
 import { Eta } from 'eta'
 
-const app = fastify({ 
-  logger: true, // ← Activez les logs pour débugger
-  trustProxy: true // ← CRUCIAL pour Railway !
+const app = fastify({
+  logger: false,
+  trustProxy: true
 })
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -23,14 +23,14 @@ app.register(fastifyCookie)
 app.register(fastifySession, {
   secret: process.env.SESSION_SECRET || 'changez-moi-en-production-avec-une-cle-longue-et-aleatoire',
   cookie: {
-    secure: 'auto', // ← Changé ici ! Fastify détecte automatiquement HTTPS
+    secure: 'auto',
     httpOnly: true,
     maxAge: 1800000,
-    sameSite: 'lax', // ← Ajouté pour plus de compatibilité
-    path: '/' // ← Explicite
+    sameSite: 'lax',
+    path: '/'
   },
   saveUninitialized: false,
-  rolling: true // ← Prolonge la session à chaque requête
+  rolling: true
 })
 
 app.register(fastifyFormbody)
